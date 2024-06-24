@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { sign, verify } from 'hono/jwt';
 
-const userRouter = new Hono<{
+export const userRouter = new Hono<{
     Bindings: {
         DATABASE_URL: string,
         JWT_SECRET_MESSAGE: string
@@ -11,26 +11,30 @@ const userRouter = new Hono<{
 }>();
 
 userRouter.post('/signup', async (c) => {
-    const prisma = new PrismaClient({
-        datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate())
-    const body = await c.req.json();
-    const user = await prisma.user.create({
-        data: {
-            email: body.email,
-            password: body.password
-        }
-    })
-    if (!user) {
-        c.status(403);
-        return c.json({
-            error: "error while signup"
+    try {
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate());
+        const body = await c.req.json();
+        const user = await prisma.user.create({
+            data: {
+                email: body.email,
+                password: body.password
+            }
         })
+        if (!user) {
+            c.status(403);
+            return c.json({
+                error: "error while signup"
+            })
+        }
+        const token = await sign({ id: user.id }, c.env.JWT_SECRET_MESSAGE);
+        return c.json({
+            JWT: token
+        })
+    } catch (error) {
+        return c.json({ error })
     }
-    const token = await sign({ id: user.id }, c.env.JWT_SECRET_MESSAGE);
-    return c.json({
-        JWT: token
-    })
 })
 
 userRouter.post('/signin', async (c) => {
@@ -56,5 +60,3 @@ userRouter.post('/signin', async (c) => {
         JWT: token
     })
 })
-
-export default userRouter;

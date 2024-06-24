@@ -1,9 +1,6 @@
 import { Hono } from 'hono';
-import userRouter from './routes/user';
-import blogRouter from './routes/blog';
-import { PrismaClient } from '@prisma/client/edge'
-import { withAccelerate } from '@prisma/extension-accelerate'
-import { sign, verify } from 'hono/jwt';
+import { userRouter } from './routes/user';
+import { blogRouter } from './routes/blog';
 
 const app = new Hono<{
   Bindings: {
@@ -12,19 +9,7 @@ const app = new Hono<{
   }
 }>();
 
-app.use('/api/v1/blog/*', async (c, next) => {
-  const header = c.req.header('authorization');
-  if (!header) {
-    c.status(403);
-    return c.json({
-      error: "unauthorized"
-    })
-  }
-  const token = header.split(" ")[1]
-
-})
-
-app.route('/api/vi/user', userRouter)
-app.route('/api/vi/blog', blogRouter)
+app.route('/api/v1/user', userRouter)
+app.route('/api/v1/blog', blogRouter)
 
 export default app;
