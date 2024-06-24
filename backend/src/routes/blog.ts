@@ -1,7 +1,7 @@
-import { Context, Hono } from "hono";
+import { Hono } from "hono";
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
-import { sign, verify } from 'hono/jwt';
+import { verify } from 'hono/jwt';
 
 export const blogRouter = new Hono<{
     Bindings: {
@@ -86,24 +86,17 @@ blogRouter.put('/:id', async (c) => {
     })
 })
 
-blogRouter.post('/bulk', async (c) => {
+blogRouter.get('/bulk', async (c) => {
     try {
         const prisma = new PrismaClient({
-            datasourceUrl: c.env.DATABASE_URL,
-        }).$extends(withAccelerate())
-
-        const authorId = c.get('userId')
-        const blogs = await prisma.post.findMany({
-            where: {
-                id: Number(authorId)
-            }
-        });
-
+            datasourceUrl: c.env.DATABASE_URL
+        }).$extends(withAccelerate());
+        const blogs = await prisma.post.findMany();
         return c.json({ blogs })
     } catch (error) {
-        return c.json({ error })
+        return c.json({ error });
     }
-})
+});
 
 blogRouter.get('/:id', async (c) => {
     try {
@@ -111,7 +104,6 @@ blogRouter.get('/:id', async (c) => {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
         }).$extends(withAccelerate())
-
         const blog = await prisma.post.findFirst({
             where: {
                 id: Number(id)
@@ -119,7 +111,7 @@ blogRouter.get('/:id', async (c) => {
         })
         return c.json({
             blog
-        })
+        });
 
     } catch (error) {
         return c.json({ error })
