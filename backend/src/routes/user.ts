@@ -52,10 +52,10 @@ userRouter.post('/signin', async (c) => {
     if (!user) {
         c.status(403);
         return c.json({
-            error: "user with this email already exist"
+            error: "user with this email does not exist"
         })
     }
-    const token = sign({ id: user.id }, c.env.JWT_SECRET_MESSAGE);
+    const token = await sign({ id: user.id }, c.env.JWT_SECRET_MESSAGE);
     return c.json({
         JWT: token
     })
