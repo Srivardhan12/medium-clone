@@ -7,8 +7,8 @@ export default function Appbar() {
                 <h2 className="font-bold text-3xl">Medium</h2>
             </div>
             <div className="flex justify-center">
-                <Link to="/signin"><button className="flex flex-col px-4">Sign in</button></Link>
-                <Link to="/signup"><button type="button" className="text-white bg-gray-800 font-medium rounded-lg text-sm px-4 py-2 me-2 mb-2">Get Started</button></Link>
+                <button className="flex flex-col justify-center px-4"><Link to="/signin">Sign in</Link></button>
+                <button type="button" className="flex flex-col text-white bg-gray-800 font-medium rounded-lg text-sm px-4 py-2 me-2"><Link to="/signup">Get Started</Link></button>
             </div>
         </div>
     )
