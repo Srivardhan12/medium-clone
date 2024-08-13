@@ -1,5 +1,5 @@
 import Appbar from "../components/Appbar";
-import { DisplayBlog } from "../components/DisplayBlog"
+import { DisplayBlog } from "../components/Blog"
 import { useBlogs } from "../hooks"
 
 export const Blogs = () => {
