@@ -7,20 +7,20 @@ import { BACKEND_URL } from "../config";
 export const SigninAuth = () => {
   // const [passwordVisbility, setPasswordVisbility] = useState(false)
   const navigate = useNavigate()
-  const [postInputs, setPostInputs] =useState <SigninInput>({
-      username: "",
-      password: "",
-    });
-    const sendRequest = async() => {
-        try {
-          const res = await axios.post(`${BACKEND_URL}/api/v1/user/signin`, postInputs);
-          const jwt = res.data;
-          localStorage.setItem("token", jwt)
-          navigate("/signup")
-        } catch (error) {
-          console.log("Error", error)
-        }
+  const [postInputs, setPostInputs] = useState<SigninInput>({
+    username: "",
+    password: "",
+  });
+  const sendRequest = async () => {
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/v1/user/signin`, postInputs);
+      const jwt = res.data;
+      localStorage.setItem("token", jwt)
+      navigate("/")
+    } catch (error) {
+      console.log("Error", error)
     }
+  }
   return (
     <>
       <div className="h-screen flex flex-col justify-center">
