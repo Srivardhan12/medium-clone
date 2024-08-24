@@ -19,7 +19,7 @@ export const DisplayBlog = ({ id, title, content, date, authorName }: blogData) 
         <Link to={`/blog/${id}`}>
             <div className="pt-2">
                 <h2 className="text-3xl font-bold">{title}</h2>
-                <p className="font-light pt-2">{content}</p>
+                <p className="font-light pt-2">{content.slice(0, 200)}...</p>
             </div>
         </Link>
         <div className="py-4">

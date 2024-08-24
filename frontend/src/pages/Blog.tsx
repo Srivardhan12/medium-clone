@@ -1,8 +1,9 @@
 /* eslint-disable  */
 import { useParams } from "react-router-dom";
 import { GetBlog } from "../hooks";
-import { FullBlog } from "../components/FullBlog";
+import { FullBlog } from "./FullBlog";
 import Appbar from "../components/Appbar";
+import FullBlogSkeleton from "../components/FullBlogSkeleton";
 
 export const Blog = () => {
     const { id } = useParams()
@@ -10,7 +11,7 @@ export const Blog = () => {
 
     if (loding) {
         return <div>
-            loding...
+            <FullBlogSkeleton />
         </div>
     }
 
