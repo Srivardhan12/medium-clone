@@ -3,4 +3,5 @@ compatibility_date = "2023-12-01"
 
 [vars]
 
+
 JWT_SECRET_MESSAGE = "secretmessage"
