@@ -30,6 +30,6 @@ export const DisplayBlog = ({ id, title, content, date, authorName }: blogData) 
 
 export function Icon({ authorName }: Pick<blogData, "authorName">) {
     return <div className="relative inline-flex items-center justify-center w-7 h-7 overflow-hidden bg-gray-300 rounded-full">
-        <span className="font-medium text-gray-600">{authorName[0]}</span>
+        <span className="font-medium text-gray-600">{authorName[0].toUpperCase()}</span>
     </div>
 }
