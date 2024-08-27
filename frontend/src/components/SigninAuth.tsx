@@ -4,28 +4,85 @@ import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../config";
 
+// export const SigninAuth = () => {
+//   // const [passwordVisbility, setPasswordVisbility] = useState(false)
+//   const navigate = useNavigate()
+//   const [errorMsg, setErrorMsg] = useState("")
+//   const [hasErrors, setHasErrors] = useState(false)
+//   const [btndisabled, setBtndisabled] = useState(false)
+//   const [postInputs, setPostInputs] = useState<SigninInput>({
+//     username: "",
+//     password: "",
+//   });
+//   const sendRequest = async () => {
+//     setHasErrors(false)
+//     if (!postInputs.username || !postInputs.password) {
+//       setHasErrors(true)
+//       setErrorMsg("Please fill all the details!")
+//       return
+//     }
+//     try {
+//       setBtndisabled(true)
+//       const res = await axios.post(`${BACKEND_URL}/api/v1/user/signin`, postInputs);
+//       if (res.status == 401 && res.data.error) {
+//         const message = res.data.error;
+//         console.log(message)
+//         setHasErrors(true)
+//         setErrorMsg(message)
+//       } else if (res.status == 200 && res.data) {
+//         const jwt = res.data;
+//         localStorage.setItem("token", jwt)
+//         navigate("/blogs")
+//       }
+//       setBtndisabled(false)
+//     } catch (error) {
+//       console.log("Error", error)
+//     }
+//   }
+interface SigninResponse {
+  token?: string;  // The JWT token from a successful response
+  error?: string;  // The error message from an unsuccessful response
+}
+
 export const SigninAuth = () => {
-  // const [passwordVisbility, setPasswordVisbility] = useState(false)
-  const navigate = useNavigate()
-  const [btndisabled, setBtndisabled] = useState(false)
+  const navigate = useNavigate();
+  const [errorMsg, setErrorMsg] = useState("");
+  const [hasErrors, setHasErrors] = useState(false);
+  const [btndisabled, setBtndisabled] = useState(false);
   const [postInputs, setPostInputs] = useState<SigninInput>({
     username: "",
     password: "",
   });
+
   const sendRequest = async () => {
-    try {
-      setBtndisabled(true)
-      const res = await axios.post(`${BACKEND_URL}/api/v1/user/signin`, postInputs);
-      if (res) {
-        const jwt = res.data;
-        localStorage.setItem("token", jwt)
-        navigate("/blogs")
-      }
-      setBtndisabled(false)
-    } catch (error) {
-      console.log("Error", error)
+    setHasErrors(false);
+    if (!postInputs.username || !postInputs.password) {
+      setHasErrors(true);
+      setErrorMsg("Please fill all the details!");
+      return;
     }
-  }
+
+    try {
+      setBtndisabled(true);
+      const res = await axios.post<SigninResponse>(`${BACKEND_URL}/api/v1/user/signin`, postInputs);
+
+      if (res.status === 200 && res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        navigate("/blogs");
+      } else if (res.data.error) {
+        setHasErrors(true);
+        setErrorMsg(res.data.error);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setHasErrors(true);
+      setErrorMsg(error.response?.data?.error || "An error occurred");
+      console.log("Error:", error);
+    } finally {
+      setBtndisabled(false);
+    }
+  };
   return (
     <>
       <div className="h-screen flex flex-col justify-center">
@@ -38,11 +95,13 @@ export const SigninAuth = () => {
             </Link>
           </p>
           <div>
+            <p className="text-red-500 font-semibold">{hasErrors ? errorMsg : ""}</p>
             <LabledInput
               type="email"
               label="email"
               placeholder="name@gmail.com"
               onChange={(e) => {
+                setBtndisabled(false)
                 setPostInputs({
                   ...postInputs,
                   username: e.target.value,
@@ -56,6 +115,7 @@ export const SigninAuth = () => {
               label="Password"
               placeholder="Password"
               onChange={(e) => {
+                setBtndisabled(false)
                 setPostInputs({
                   ...postInputs,
                   password: e.target.value,
@@ -102,7 +162,6 @@ function LabledInput({ label, placeholder, onChange, type }: LabledInput) {
       <input
         type={type || "text"}
         onChange={onChange}
-        id="first_name"
         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
         placeholder={placeholder}
         required

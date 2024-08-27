@@ -21,7 +21,7 @@ userRouter.post('/signup', async (c) => {
         const body = await c.req.json();
         const { success, error: validationError } = signupInput.safeParse(body);
         if (!success) {
-            c.status(411);
+            c.status(401);
             return c.json({
                 error: "Inputs are not correct",
                 details: validationError
@@ -43,7 +43,7 @@ userRouter.post('/signup', async (c) => {
         const token = await sign({ id: user.id }, c.env.JWT_SECRET_MESSAGE);
         return c.text(token);
     } catch (error) {
-        c.status(411);
+        c.status(401);
         return c.json({ error: "User with this email already exists" });
     }
 });
@@ -56,7 +56,7 @@ userRouter.post('/signin', async (c) => {
     const body = await c.req.json();
     const { success } = signinInput.safeParse(body)
     if (!success) {
-        c.status(411);
+        c.status(401);
         return c.json({ error: "Inputs are incorrect" });
     }
     const user = await prisma.user.findFirst({
@@ -67,11 +67,11 @@ userRouter.post('/signin', async (c) => {
     })
 
     if (!user) {
-        c.status(411);
+        c.status(401);
         return c.json({
-            error: "user with this email does not exist"
+            error: "User with this email does not exist"
         })
     }
     const token = await sign({ id: user.id }, c.env.JWT_SECRET_MESSAGE);
-    return c.text(token)
+    return c.json({ token: token })
 })
