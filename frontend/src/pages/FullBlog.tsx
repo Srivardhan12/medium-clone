@@ -1,7 +1,16 @@
 import { Blog } from "../hooks"
 import { Icon } from "../components/Blog"
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const FullBlog = ({ blog }: { blog: Blog }) => {
+    const navigate = useNavigate()
+    useEffect(() => {
+        if (!localStorage.getItem("token")) {
+            navigate("/");
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     return <>
         <div className="flex justify-center pt-12">
             <div className="grid grid-cols-12 w-full max-w-screen-lg gap-10">
