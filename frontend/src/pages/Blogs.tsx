@@ -1,10 +1,21 @@
+import { useEffect } from "react";
 import Appbar from "../components/Appbar";
 import { DisplayBlog } from "../components/Blog"
 import BlogSkeleton from "../components/BlogSkeleton";
 import { useBlogs } from "../hooks"
+import { useNavigate } from "react-router-dom";
 
 export const Blogs = () => {
     const { loding, blogs } = useBlogs();
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!localStorage.getItem("token")) {
+            navigate("/");
+        }
+    }, [])
+
 
     if (loding == true) {
         return <div>

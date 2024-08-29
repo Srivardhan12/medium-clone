@@ -77,7 +77,7 @@ export const SigninAuth = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setHasErrors(true);
-      setErrorMsg(error.response?.data?.error || "An error occurred");
+      setErrorMsg(error.response?.data?.error || "Please check your Credentials");
       console.log("Error:", error);
     } finally {
       setBtndisabled(false);
