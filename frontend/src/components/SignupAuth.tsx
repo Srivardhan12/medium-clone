@@ -4,9 +4,16 @@ import { Link, useNavigate } from "react-router-dom"
 import { BACKEND_URL } from "../config"
 import axios from "axios"
 
+interface SignupResponse {
+    token?: string;  // The JWT token from a successful response
+    error?: string;  // The error message from an unsuccessful response
+}
+
 export const SignupAuth = () => {
     // const [passwordVisbility, setPasswordVisbility] = useState(false)
     const navigate = useNavigate()
+    const [errorMsg, setErrorMsg] = useState("");
+    const [hasErrors, setHasErrors] = useState(false);
     const [btndisabled, setBtndisabled] = useState(false)
     const [postInputs, setPostInputs] = useState<SignupInput>({
         name: "",
@@ -14,6 +21,12 @@ export const SignupAuth = () => {
         password: ""
     })
     const sendRequest = async () => {
+        setHasErrors(false);
+        if (!postInputs.name || !postInputs.password || !postInputs.username) {
+            setHasErrors(true);
+            setErrorMsg("Please fill all the details!");
+            return
+        }
         try {
             setBtndisabled(true)
             const res = await axios.post(`${BACKEND_URL}/api/v1/user/signup`, postInputs);
@@ -26,12 +39,31 @@ export const SignupAuth = () => {
         } catch (error) {
             console.log("Error", error)
         }
+        try {
+            setBtndisabled(true);
+            const res = await axios.post<SignupResponse>(`${BACKEND_URL}/api/v1/user/signup`, postInputs);
+            if (res.status === 200 && res.data.token) {
+                localStorage.setItem("token", res.data.token);
+                navigate("/blogs");
+            } else if (res.data.error) {
+                setHasErrors(true);
+                setErrorMsg(res.data.error);
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            setHasErrors(true);
+            setErrorMsg(error.response?.data?.error || "An error occurred");
+            console.log("Error:", error);
+        } finally {
+            setBtndisabled(false);
+        }
     }
     return <>
         <div className="h-screen flex flex-col justify-center">
             <div className="max-w-xl m-auto">
                 <h2 className="text-4xl font-bold">Create an account</h2>
                 <p className="text-gray-500 text-center mt-1 mb-5">Already have an account? <Link className="underline" to={"/"}>Login</Link></p>
+                <p className="text-red-500 font-semibold">{hasErrors ? errorMsg : ""}</p>
                 <div>
                     <LabledInput label="Username" placeholder="Username" onChange={(e) => {
                         setPostInputs({

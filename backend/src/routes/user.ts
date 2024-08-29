@@ -44,7 +44,7 @@ userRouter.post('/signup', async (c) => {
         return c.text(token);
     } catch (error) {
         c.status(401);
-        return c.json({ error: "User with this email already exists" });
+        return c.json({ error: "Please check your Credentials!" });
     }
 });
 
@@ -68,9 +68,7 @@ userRouter.post('/signin', async (c) => {
 
     if (!user) {
         c.status(401);
-        return c.json({
-            error: "User with this email does not exist"
-        })
+        return c.json({ error: "Please check your Credentials!" })
     }
     const token = await sign({ id: user.id }, c.env.JWT_SECRET_MESSAGE);
     return c.json({ token: token })
