@@ -34,7 +34,7 @@ export const Blogs = () => {
     return <div>
         <Appbar />
         <div className="min-w-xl max-w-2xl mx-auto p-5">
-            {blogs.map(blog => (<DisplayBlog id={blog.id} title={blog.title} content={blog.content} key={blog.id} date="22 Dec 2024" authorName={blog.author.name || "Anonymous"} />))}
+            {blogs.map(blog => (<DisplayBlog id={blog.id} title={blog.title} content={blog.content} key={blog.id} date={blog.date} authorName={blog.author.name || "Anonymous"} />))}
         </div>
     </div>
 }

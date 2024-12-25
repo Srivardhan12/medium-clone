@@ -13,6 +13,7 @@ CREATE TABLE "Post" (
     "id" INT NOT NULL,
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
+    "date" TEXT NOT NULL,
     "published" BOOLEAN NOT NULL DEFAULT false,
     "authorId" INT NOT NULL,
 
