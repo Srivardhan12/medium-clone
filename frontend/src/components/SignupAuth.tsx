@@ -62,7 +62,7 @@ export const SignupAuth = () => {
         <div className="h-screen flex flex-col justify-center">
             <div className="max-w-xl m-auto">
                 <h2 className="text-4xl font-bold">Create an account</h2>
-                <p className="text-gray-500 text-center mt-1 mb-5">Already have an account? <Link className="underline" to={"/"}>Login</Link></p>
+                <p className="text-gray-500 text-center mt-1 mb-5">Already have an account? <Link className="underline text-blue-500" to={"/"}>Login</Link></p>
                 <p className="text-red-500 font-semibold">{hasErrors ? errorMsg : ""}</p>
                 <div>
                     <LabledInput label="Username" placeholder="Username" onChange={(e) => {

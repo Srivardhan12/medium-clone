@@ -90,7 +90,7 @@ export const SigninAuth = () => {
           <h2 className="text-4xl font-bold">Login into account</h2>
           <p className="text-gray-500 text-center mt-1 mb-5">
             New user?{" "}
-            <Link className="underline" to={"/signup"}>
+            <Link className="underline text-blue-500" to={"/signup"}>
               create an account
             </Link>
           </p>

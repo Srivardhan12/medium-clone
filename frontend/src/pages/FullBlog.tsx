@@ -12,15 +12,15 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return <>
-        <div className="flex justify-center pt-12">
-            <div className="grid grid-cols-12 w-full max-w-screen-lg gap-10">
-                <div className="col-span-8">
-                    <div className="col-span-8">
+        <div className="flex justify-center sm:pt-12 pt-5 px-2">
+            <div className="grid grid-cols-12 max-w-screen-lg sm:gap-10 gap-5">
+                <div className="sm:md:col-span-8 col-span-12">
+                    <div>
                         <h2 className="text-5xl font-extrabold">{blog.title}</h2>
                         <p className="text-slate-500 pt-6 pl-2">{blog.content}</p>
                     </div>
                 </div>
-                <div className="col-span-4 pt-4">
+                <div className="sm:md:col-span-4 col-span-12 sm:pt-4 px-3 py-5">
                     <p className="font-medium">Author</p>
                     <div className="flex gap-2 pt-2">
                         <Icon authorName={blog.author.name || "Anonymous"} />

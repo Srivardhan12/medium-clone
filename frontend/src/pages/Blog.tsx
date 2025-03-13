@@ -15,7 +15,12 @@ export const Blog = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     const { id } = useParams()
-    const { loding, blog } = GetBlog({ id: id || "" })
+    // const { loding, blog } = GetBlog({ id: id || "" })
+    const loding = true
+    const blog = {
+        title: "title",
+        content: "content",
+    }
 
     if (loding) {
         return <div>
