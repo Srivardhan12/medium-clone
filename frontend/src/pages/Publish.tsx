@@ -10,18 +10,17 @@ export const Publish = () => {
     const [description, setDescription] = useState("")
     const navigate = useNavigate();
     const publishBlog = () => {
-        const today: Date = new Date();
-        const dd: string = String(today.getDate()).padStart(2, '0');
-        const mm: string = String(today.getMonth() + 1).padStart(2, '0');
-        const yyyy: number = today.getFullYear();
+        // const today: Date = new Date();
+        // const dd: string = String(today.getDate()).padStart(2, '0');
+        // const mm: string = String(today.getMonth() + 1).padStart(2, '0');
+        // const yyyy: number = today.getFullYear();
 
-        const formattedDate: string = `${dd}-${mm}-${yyyy}`;
+        // const formattedDate: string = `${dd}-${mm}-${yyyy}`;
 
         setBtndisabled(true);
         axios.post(`${BACKEND_URL}/api/v1/blog`, {
             title,
             content: description,
-            date: formattedDate
         }, {
             headers: {
                 Authorization: localStorage.getItem("token")

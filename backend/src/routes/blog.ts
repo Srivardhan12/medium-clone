@@ -34,6 +34,13 @@ blogRouter.use('/', async (c, next) => {
 
 blogRouter.post('/', async (c) => {
     try {
+        const today: Date = new Date();
+        const dd: string = String(today.getDate()).padStart(2, '0');
+        const mm: string = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy: number = today.getFullYear();
+
+        const formattedDate: string = `${dd}-${mm}-${yyyy}`;
+
         const body = await c.req.json();
         const authorId = c.get('userId')
         const { success } = createBlogInput.safeParse(body);
@@ -44,12 +51,11 @@ blogRouter.post('/', async (c) => {
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
         }).$extends(withAccelerate())
-
         const blog = await prisma.post.create({
             data: {
                 title: body.title,
                 content: body.content,
-                date: body.date,
+                date: formattedDate,
                 authorId: Number(authorId)
             }
         })
