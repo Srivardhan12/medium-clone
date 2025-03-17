@@ -2,7 +2,7 @@ import axios from "axios"
 import Appbar from "../components/Appbar"
 import { BACKEND_URL } from "../config"
 import { useNavigate } from "react-router-dom"
-import React, { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import JoditEditor from 'jodit-react';
 
 export const Publish = () => {
