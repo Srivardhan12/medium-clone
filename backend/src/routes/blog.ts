@@ -129,6 +129,76 @@ blogRouter.get('/bulk', async (c) => {
     }
 });
 
+blogRouter.get('/author/:authorId', async (c) => {
+    try {
+        const authorId = c.req.param("authorId");
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate())
+        const blogs = await prisma.post.findMany({
+            where: {
+                authorId: Number(authorId)
+            },
+            select: {
+                title: true,
+                content: true,
+                date: true,
+                id: true,
+                author: {
+                    select: {
+                        name: true,
+                        id: true
+                    }
+                }
+            }
+        })
+        return c.json({
+            blogs
+        });
+    } catch (error) {
+        return c.json({ error })
+    }
+})
+
+blogRouter.delete('/:id', async (c) => {
+    try {
+        const id = c.req.param("id");
+        const userId = c.get('userId');
+
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate())
+
+        // First check if the blog exists and belongs to the user
+        const blog = await prisma.post.findFirst({
+            where: {
+                id: Number(id),
+                authorId: Number(userId)
+            }
+        });
+
+        if (!blog) {
+            c.status(403);
+            return c.json({
+                error: "Blog not found or you don't have permission to delete it"
+            });
+        }
+
+        // Delete the blog
+        await prisma.post.delete({
+            where: {
+                id: Number(id)
+            }
+        });
+
+        return c.json({
+            message: "Blog deleted successfully"
+        });
+    } catch (error) {
+        return c.json({ error });
+    }
+});
+
 blogRouter.get('/:id', async (c) => {
     try {
         const id = c.req.param("id");
@@ -145,7 +215,8 @@ blogRouter.get('/:id', async (c) => {
                 id: true,
                 author: {
                     select: {
-                        name: true
+                        name: true,
+                        id: true
                     }
                 }
             }
@@ -158,5 +229,3 @@ blogRouter.get('/:id', async (c) => {
         return c.json({ error })
     }
 })
-
-

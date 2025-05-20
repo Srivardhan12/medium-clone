@@ -2,16 +2,25 @@ import { SignupInput } from "@srivardhan_24/medium-project"
 import { ChangeEvent, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { BACKEND_URL } from "../config"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
+import { useUser } from "../context/UserContext"
+import { jwtDecode } from "jwt-decode"
 
 interface SignupResponse {
     token?: string;  // The JWT token from a successful response
     error?: string;  // The error message from an unsuccessful response
 }
 
+interface DecodedToken {
+    id: string;
+    email: string;
+    name?: string;
+}
+
 export const SignupAuth = () => {
     // const [passwordVisbility, setPasswordVisbility] = useState(false)
     const navigate = useNavigate()
+    const { setUser } = useUser();
     const [errorMsg, setErrorMsg] = useState("");
     const [hasErrors, setHasErrors] = useState(false);
     const [btndisabled, setBtndisabled] = useState(false)
@@ -28,31 +37,29 @@ export const SignupAuth = () => {
             return
         }
         try {
-            setBtndisabled(true)
-            const res = await axios.post(`${BACKEND_URL}/api/v1/user/signup`, postInputs);
-            const jwt = res.data;
-            localStorage.setItem("token", jwt)
-            if (res) {
-                navigate("/blogs")
-            }
-            setBtndisabled(false)
-        } catch (error) {
-            console.log("Error", error)
-        }
-        try {
             setBtndisabled(true);
             const res = await axios.post<SignupResponse>(`${BACKEND_URL}/api/v1/user/signup`, postInputs);
-            if (res.status === 200 && res.data.token) {
-                localStorage.setItem("token", res.data.token);
-                navigate("/blogs");
+
+            if (res.status === 200 || res.data.token) {
+                const token = res.data.token;
+                if (token) {
+                    localStorage.setItem("token", token);
+                    const decoded = jwtDecode<DecodedToken>(token);
+                    setUser({
+                        id: decoded.id,
+                        email: postInputs.username,
+                        name: postInputs.name
+                    });
+                }
+                navigate("/");
             } else if (res.data.error) {
                 setHasErrors(true);
                 setErrorMsg(res.data.error);
             }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
+        } catch (error) {
             setHasErrors(true);
-            setErrorMsg(error.response?.data?.error || "Please check your Credentials");
+            const axiosError = error as AxiosError<{ error: string }>;
+            setErrorMsg(axiosError.response?.data?.error || "An error occurred during signup");
             console.log("Error:", error);
         } finally {
             setBtndisabled(false);
@@ -62,7 +69,7 @@ export const SignupAuth = () => {
         <div className="h-screen flex flex-col justify-center">
             <div className="max-w-xl m-auto">
                 <h2 className="text-4xl font-bold">Create an account</h2>
-                <p className="text-gray-500 text-center mt-1 mb-5">Already have an account? <Link className="underline text-blue-500" to={"/"}>Login</Link></p>
+                <p className="text-gray-500 text-center mt-1 mb-5">Already have an account? <Link className="underline text-blue-500" to={"/signin"}>Login</Link></p>
                 <p className="text-red-500 font-semibold">{hasErrors ? errorMsg : ""}</p>
                 <div>
                     <LabledInput label="Username" placeholder="Username" onChange={(e) => {

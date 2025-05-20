@@ -1,51 +1,25 @@
 import { SigninInput } from "@srivardhan_24/medium-project";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../config";
+import { useUser } from "../context/UserContext";
+import { jwtDecode } from "jwt-decode";
 
-// export const SigninAuth = () => {
-//   // const [passwordVisbility, setPasswordVisbility] = useState(false)
-//   const navigate = useNavigate()
-//   const [errorMsg, setErrorMsg] = useState("")
-//   const [hasErrors, setHasErrors] = useState(false)
-//   const [btndisabled, setBtndisabled] = useState(false)
-//   const [postInputs, setPostInputs] = useState<SigninInput>({
-//     username: "",
-//     password: "",
-//   });
-//   const sendRequest = async () => {
-//     setHasErrors(false)
-//     if (!postInputs.username || !postInputs.password) {
-//       setHasErrors(true)
-//       setErrorMsg("Please fill all the details!")
-//       return
-//     }
-//     try {
-//       setBtndisabled(true)
-//       const res = await axios.post(`${BACKEND_URL}/api/v1/user/signin`, postInputs);
-//       if (res.status == 401 && res.data.error) {
-//         const message = res.data.error;
-//         console.log(message)
-//         setHasErrors(true)
-//         setErrorMsg(message)
-//       } else if (res.status == 200 && res.data) {
-//         const jwt = res.data;
-//         localStorage.setItem("token", jwt)
-//         navigate("/blogs")
-//       }
-//       setBtndisabled(false)
-//     } catch (error) {
-//       console.log("Error", error)
-//     }
-//   }
 interface SigninResponse {
   token?: string;  // The JWT token from a successful response
   error?: string;  // The error message from an unsuccessful response
 }
 
+interface DecodedToken {
+  id: string;
+  email: string;
+  name?: string;
+}
+
 export const SigninAuth = () => {
   const navigate = useNavigate();
+  const { setUser } = useUser();
   const [errorMsg, setErrorMsg] = useState("");
   const [hasErrors, setHasErrors] = useState(false);
   const [btndisabled, setBtndisabled] = useState(false);
@@ -67,17 +41,26 @@ export const SigninAuth = () => {
       const res = await axios.post<SigninResponse>(`${BACKEND_URL}/api/v1/user/signin`, postInputs);
 
       if (res.status === 200 && res.data.token) {
-        localStorage.setItem("token", res.data.token);
-        navigate("/blogs");
+        const token = res.data.token;
+        localStorage.setItem("token", token);
+
+        // Decode token and set user in global state
+        const decoded = jwtDecode<DecodedToken>(token);
+        setUser({
+          id: decoded.id,
+          email: postInputs.username,
+          name: decoded.name
+        });
+
+        navigate("/");
       } else if (res.data.error) {
         setHasErrors(true);
         setErrorMsg(res.data.error);
       }
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
       setHasErrors(true);
-      setErrorMsg(error.response?.data?.error || "Please check your Credentials");
+      const axiosError = error as AxiosError<{ error: string }>;
+      setErrorMsg(axiosError.response?.data?.error || "Please check your Credentials");
       console.log("Error:", error);
     } finally {
       setBtndisabled(false);

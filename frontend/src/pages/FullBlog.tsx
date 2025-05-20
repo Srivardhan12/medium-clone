@@ -1,23 +1,23 @@
 import { Blog } from "../hooks"
 import { Icon } from "../components/Blog"
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 export const FullBlog = ({ blog }: { blog: Blog }) => {
-    const navigate = useNavigate()
+
     useEffect(() => {
-        if (!localStorage.getItem("token")) {
-            navigate("/");
-        }
-    }, [navigate])
+        window.scroll(0, 0)
+    }, []);
+
     return <>
         <div className="flex justify-center px-2">
             <div className="max-w-screen-lg">
                 <div className="py-3">
                     <p className="font-medium">Author</p>
-                    <div className="flex gap-2 pt-2">
-                        <Icon authorName={blog.author.name || "Anonymous"} />
-                        <h5 className="text-xl font-bold">{blog.author.name || "Anonymous"}</h5>
+                    <div className="flex gap-2 pt-2 items-center justify-between">
+                        <div className="flex gap-2 items-center">
+                            <Icon authorName={blog.author.name || "Anonymous"} />
+                            <h5 className="text-xl font-bold">{blog.author.name || "Anonymous"}</h5>
+                        </div>
                     </div>
                     <div className="w-full h-[0.9px] bg-gray-500 mt-5" />
                 </div>
@@ -59,6 +59,5 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                 </div>
             </div>
         </div>
-
     </>
 }

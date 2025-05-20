@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Appbar from "../components/Appbar";
+import { Appbar } from "../components/Appbar";
 import { DisplayBlog } from "../components/Blog";
 import BlogSkeleton from "../components/BlogSkeleton";
 import { useBlogs } from "../hooks";

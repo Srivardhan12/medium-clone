@@ -1,11 +1,15 @@
 import axios from "axios"
-import Appbar from "../components/Appbar"
+import { Appbar } from "../components/Appbar"
 import { BACKEND_URL } from "../config"
 import { useNavigate } from "react-router-dom"
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import JoditEditor from 'jodit-react';
 
 export const Publish = () => {
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [])
 
     const editor = useRef(null);
     const [content, setContent] = useState('');
