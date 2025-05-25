@@ -12897,7 +12897,6 @@ init_checked_fetch();
 init_modules_watch_stub();
 var import_edge2 = __toESM(require_edge3());
 var import_medium_project3 = __toESM(require_dist());
-var import_medium_project4 = __toESM(require_dist());
 var blogRouter = new Hono2();
 blogRouter.use("/", async (c, next) => {
   try {
@@ -12924,7 +12923,7 @@ blogRouter.post("/", async (c) => {
     const formattedDate = `${dd}-${mm}-${yyyy}`;
     const body = await c.req.json();
     const authorId = c.get("userId");
-    const { success } = import_medium_project4.createBlogInput.safeParse(body);
+    const { success } = import_medium_project3.createBlogInput.safeParse(body);
     if (!success) {
       c.status(411);
       return c.json({ error: "Inputs are incorrect" });
@@ -12953,35 +12952,40 @@ blogRouter.post("/", async (c) => {
     return c.json({ error });
   }
 });
-blogRouter.put("/:id", async (c) => {
-  const id = c.req.param("id");
-  const body = await c.req.json();
-  const { success } = import_medium_project3.updateBlogInput.safeParse(body);
-  if (!success) {
-    c.status(411);
-    return c.json({ error: "Inputs are incorrect" });
-  }
-  const prisma = new import_edge2.PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL
-  }).$extends(withAccelerate());
-  const blog = await prisma.post.update({
-    where: {
-      id: Number(id)
-    },
-    data: {
-      title: body.title,
-      content: body.content
-    }
-  });
-  if (!blog) {
-    c.status(411);
-    return c.json({
-      error: "error occured while updating"
+blogRouter.put("update/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const userId = c.get("userId");
+    const body = await c.req.json();
+    const prisma = new import_edge2.PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL
+    }).$extends(withAccelerate());
+    const blog = await prisma.post.findFirst({
+      where: {
+        id: Number(id)
+      }
     });
+    if (!blog) {
+      c.status(403);
+      return c.json({
+        error: "Blog not found or you don't have permission to update it"
+      });
+    }
+    const updatedBlog = await prisma.post.update({
+      where: {
+        id: Number(id)
+      },
+      data: {
+        title: body.title,
+        content: body.content
+      }
+    });
+    return c.json({
+      id: updatedBlog.id
+    });
+  } catch (error) {
+    return c.json({ error });
   }
-  return c.json({
-    id: blog.id
-  });
 });
 blogRouter.get("/bulk", async (c) => {
   try {
@@ -13036,17 +13040,15 @@ blogRouter.get("/author/:authorId", async (c) => {
     return c.json({ error });
   }
 });
-blogRouter.delete("/:id", async (c) => {
+blogRouter.delete("delete/:id", async (c) => {
   try {
     const id = c.req.param("id");
-    const userId = c.get("userId");
     const prisma = new import_edge2.PrismaClient({
       datasourceUrl: c.env.DATABASE_URL
     }).$extends(withAccelerate());
     const blog = await prisma.post.findFirst({
       where: {
-        id: Number(id),
-        authorId: Number(userId)
+        id: Number(id)
       }
     });
     if (!blog) {

@@ -23,7 +23,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                 </div>
                 <div>
                     <div>
-                        <h2 className="text-5xl font-extrabold">{blog.title}</h2>
+                        <h2 className="text-5xl font-bold">{blog.title}</h2>
                         <iframe
                             className="h-screen"
                             title="content"
