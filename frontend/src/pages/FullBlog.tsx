@@ -10,7 +10,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
 
     return <>
         <div className="flex justify-center px-2">
-            <div className="max-w-screen-lg">
+            <div className="w-4/6">
                 <div className="py-3">
                     <p className="font-medium">Author</p>
                     <div className="flex gap-2 pt-2 items-center justify-between">
@@ -19,9 +19,9 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                             <h5 className="text-xl font-bold">{blog.author.name || "Anonymous"}</h5>
                         </div>
                     </div>
-                    <div className="w-full h-[0.9px] bg-gray-500 mt-5" />
+                    <div />
                 </div>
-                <div>
+                <div className="w-full h-[0.9px] bg-gray-500 mt-5">
                     <div>
                         <h2 className="text-5xl font-bold">{blog.title}</h2>
                         <iframe

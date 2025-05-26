@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 
@@ -7,8 +7,23 @@ export const Appbar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const loggedUser = localStorage.getItem("user");
+        if (loggedUser) {
+            try {
+                setUser(JSON.parse(loggedUser));
+            } catch (e) {
+                setUser(null);
+            }
+        } else {
+            setUser(null);
+        }
+    }, [setUser])
+
+
     const handleLogout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setUser(null);
         navigate("/");
     };

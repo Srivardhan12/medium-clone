@@ -50,6 +50,7 @@ export const SignupAuth = () => {
                         email: postInputs.username,
                         name: postInputs.name
                     });
+                    localStorage.setItem("user", JSON.stringify(decoded));
                 }
                 navigate("/");
             } else if (res.data.error) {

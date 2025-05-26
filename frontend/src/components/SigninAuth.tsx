@@ -51,6 +51,7 @@ export const SigninAuth = () => {
           email: postInputs.username,
           name: decoded.name
         });
+        localStorage.setItem("user", JSON.stringify(decoded));
 
         navigate("/");
       } else if (res.data.error) {

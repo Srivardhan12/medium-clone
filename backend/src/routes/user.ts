@@ -40,7 +40,7 @@ userRouter.post('/signup', async (c) => {
                 error: "Error while signup"
             });
         }
-        const token = await sign({ id: user.id }, c.env.JWT_SECRET_MESSAGE);
+        const token = await sign({ id: user.id, name: user.name }, c.env.JWT_SECRET_MESSAGE);
         return c.text(token);
     } catch (error) {
         c.status(401);
@@ -70,6 +70,6 @@ userRouter.post('/signin', async (c) => {
         c.status(401);
         return c.json({ error: "Please check your Credentials!" })
     }
-    const token = await sign({ id: user.id }, c.env.JWT_SECRET_MESSAGE);
+    const token = await sign({ id: user.id, name: user.name }, c.env.JWT_SECRET_MESSAGE);
     return c.json({ token: token })
 })
