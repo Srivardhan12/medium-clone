@@ -13,6 +13,7 @@ export const Publish = () => {
 
     const editor = useRef(null);
     const [content, setContent] = useState('');
+    const [errorMsg, setErrorMsg] = useState("")
 
     const config = useMemo(() => ({
         placeholder: 'Start typings...'
@@ -23,7 +24,18 @@ export const Publish = () => {
     const [btndisabled, setBtndisabled] = useState(false)
     const [title, setTitle] = useState("")
     const navigate = useNavigate();
+    console.log(content, content.length)
     const publishBlog = () => {
+        function isContentEmpty(content: string) {
+            const text = content.replace(/<[^>]*>/g, "").trim(); // strips all tags
+            return text === ""; // true if no visible text
+        }
+
+        if (title.trim().length === 0 || isContentEmpty(content)) {
+            setErrorMsg("Title or Content is Empty");
+            return;
+        }
+
         setBtndisabled(true);
         axios.post(`${BACKEND_URL}/api/v1/blog`, {
             title,
@@ -41,8 +53,9 @@ export const Publish = () => {
         <div>
             <Appbar />
             <div className="min-w-xl max-w-5xl mx-auto ">
+                <p className="text-center bg-red-500 text-white">{errorMsg}</p>
                 <div>
-                    <input onChange={(e) => { setTitle(e.target.value) }} type="text" className="h-fit outline-none focus:border-none text-gray-900 text-4xl rounded-lg block w-full p-2.5  font-bold break-words" required placeholder="Title" />
+                    <input onChange={(e) => { setTitle(e.target.value), setErrorMsg("") }} type="text" className="h-fit outline-none focus:border-none text-gray-900 text-4xl rounded-lg block w-full p-2.5  font-bold break-words" required placeholder="Title" />
                     <div>
                         <JoditEditor
                             ref={editor}
@@ -50,7 +63,7 @@ export const Publish = () => {
                             config={config}
                             tabIndex={1} // tabIndex of textarea
                             onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => setContent(newContent)}
+                            onChange={newContent => { setContent(newContent), setErrorMsg("") }}
                         />
                     </div>
                 </div>
