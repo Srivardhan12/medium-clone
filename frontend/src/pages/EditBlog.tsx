@@ -51,7 +51,7 @@ export default function EditBlog() {
     }
     return (
         <div>
-            <input onChange={(e) => { setTitle(e.target.value) }} type="text" className="h-fit outline-none focus:border-none text-gray-900 text-4xl rounded-lg block w-full p-2.5  font-bold break-words" value={title} />
+            <input onChange={(e) => { setTitle(e.target.value) }} type="text" className="h-fit outline-none focus:border-none text-gray-900 text-4xl rounded-lg block w-full p-2.5  font-bold break-words" required value={title} />
             <JoditEditor
                 ref={editor}
                 value={content}
