@@ -161,6 +161,7 @@ export const MyBlogs = () => {
                                                 </svg> : ""
                                             } */}
                                         </button>
+                                        {/* <button className="bg-black text-white px-3 py-1 rounded-md hover:bg-[#3a3a3a] transition-colors">Share</button> */}
                                     </div>
                                 </div>
                             );

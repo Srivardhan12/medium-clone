@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Blog, GetBlog } from "../hooks";
 import FullBlogSkeleton from "../components/FullBlogSkeleton";
@@ -36,12 +36,6 @@ export default function EditBlog() {
         });
     };
 
-    const config = useMemo(() => ({
-        placeholder: 'Start typings...'
-    }),
-        []
-    );
-
     useEffect(() => {
         if (blog && typeof blog === "object" && "content" in blog) {
             // @ts-ignore
@@ -61,7 +55,6 @@ export default function EditBlog() {
             <JoditEditor
                 ref={editor}
                 value={content}
-                config={config}
                 tabIndex={1} // tabIndex of textarea
                 onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
                 onChange={newContent => setContent(newContent)}

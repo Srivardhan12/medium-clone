@@ -42,7 +42,7 @@ export const Publish = () => {
             <Appbar />
             <div className="min-w-xl max-w-5xl mx-auto ">
                 <div>
-                    <input onChange={(e) => { setTitle(e.target.value) }} type="text" className="h-fit outline-none focus:border-none text-gray-900 text-4xl rounded-lg block w-full p-2.5  font-bold break-words" placeholder="Title" />
+                    <input onChange={(e) => { setTitle(e.target.value) }} type="text" className="h-fit outline-none focus:border-none text-gray-900 text-4xl rounded-lg block w-full p-2.5  font-bold break-words" required placeholder="Title" />
                     <div>
                         <JoditEditor
                             ref={editor}
