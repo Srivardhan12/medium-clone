@@ -52,7 +52,7 @@ export const SignupAuth = () => {
                     });
                     localStorage.setItem("user", JSON.stringify(decoded));
                 }
-                navigate("/");
+                navigate("/signin");
             } else if (res.data.error) {
                 setHasErrors(true);
                 setErrorMsg(res.data.error);
